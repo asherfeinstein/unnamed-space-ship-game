@@ -1,8 +1,11 @@
-[gd_scene load_steps=15 format=3 uid="uid://c138k6plon5kg"]
+[gd_scene load_steps=16 format=3 uid="uid://c138k6plon5kg"]
 
 [ext_resource type="Texture2D" uid="uid://d3igmjq3kprlf" path="res://enemy ship/enemy ship.png" id="1_0ri4l"]
 [ext_resource type="Script" uid="uid://cdcxviixpfxur" path="res://enemy ship/enemy.gd" id="1_v64lm"]
 [ext_resource type="Texture2D" uid="uid://bk0giyofni0fm" path="res://enemy ship/enemy ship (exploded).png" id="3_4nmka"]
+
+[sub_resource type="Gradient" id="Gradient_4nmka"]
+colors = PackedColorArray(0.907334, 0.520299, 0, 1, 1, 1, 1, 0)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_v64lm"]
 radius = 15.0333
@@ -70,6 +73,34 @@ collision_layer = 4
 collision_mask = 0
 script = ExtResource("1_v64lm")
 
+[node name="FireBulletArea" type="Area2D" parent="."]
+rotation = 1.5708
+scale = Vector2(4, 4)
+collision_layer = 0
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="FireBulletArea"]
+position = Vector2(0.499947, -14.75)
+polygon = PackedVector2Array(-67, -245, -0.00010498, 1, 67, -245)
+
+[node name="engine particles" type="CPUParticles2D" parent="."]
+position = Vector2(-54, 0)
+rotation = 1.5708
+scale = Vector2(4, 4)
+amount = 80
+lifetime = 0.5
+explosiveness = 0.07
+direction = Vector2(0, 1)
+spread = 10.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 50.0
+initial_velocity_max = 100.0
+angle_min = -90.0
+angle_max = -90.0
+scale_amount_min = 5.0
+scale_amount_max = 15.0
+color = Color(1, 0.633333, 0, 1)
+color_ramp = SubResource("Gradient_4nmka")
+
 [node name="Collision" type="CollisionShape2D" parent="."]
 rotation = 1.5708
 scale = Vector2(4, 4)
@@ -130,7 +161,14 @@ wait_time = 0.05
 [node name="UpdateGoalPointTimer" type="Timer" parent="."]
 wait_time = 0.5
 
+[node name="AttemptShot" type="Timer" parent="."]
+wait_time = 0.2
+
+[connection signal="body_entered" from="FireBulletArea" to="." method="_on_fire_bullet_area_body_entered"]
+[connection signal="body_exited" from="FireBulletArea" to="." method="_on_fire_bullet_area_body_exited"]
+[connection signal="finished" from="engine particles" to="engine particles" method="_on_finished"]
 [connection signal="body_entered" from="AreaHit" to="." method="_on_area_hit_body_entered"]
 [connection signal="finished" from="ExplodedShipParticles" to="." method="_on_exploded_ship_particles_finished"]
 [connection signal="timeout" from="DamageColorTimer" to="." method="_on_damage_color_timer_timeout"]
 [connection signal="timeout" from="UpdateGoalPointTimer" to="." method="_on_update_goal_point_timer_timeout"]
+[connection signal="timeout" from="AttemptShot" to="." method="_on_attempt_shot_timeout"]

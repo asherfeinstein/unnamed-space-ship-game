@@ -1,7 +1,36 @@
-[gd_scene load_steps=5 format=3 uid="uid://nhuijsdhxnsd"]
+[gd_scene load_steps=10 format=3 uid="uid://nhuijsdhxnsd"]
 
 [ext_resource type="Script" uid="uid://c1ufjlx316j32" path="res://bullet/bullet.gd" id="1_6wip1"]
-[ext_resource type="Texture2D" uid="uid://c84pkpr4j7ugv" path="res://bullet/NewPlayerBullet.png" id="2_6wip1"]
+[ext_resource type="Texture2D" uid="uid://dct0u80j8npkh" path="res://bullet/spaceBullet.png" id="2_0qjqd"]
+[ext_resource type="Texture2D" uid="uid://get5riwgijd7" path="res://bullet/spaceBullet (1).png" id="2_xvnxm"]
+[ext_resource type="Texture2D" uid="uid://0ypglmwn4f8r" path="res://bullet/bullet light.png" id="3_0qjqd"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ynyjt"]
+atlas = ExtResource("2_xvnxm")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3udht"]
+atlas = ExtResource("2_0qjqd")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_86agt"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ynyjt")
+}],
+"loop": true,
+"name": &"enemyBullet",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3udht")
+}],
+"loop": true,
+"name": &"playerBullet",
+"speed": 5.0
+}]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_6wip1"]
 radius = 0.999989
@@ -11,24 +40,24 @@ height = 1.99998
 radius = 12.0
 
 [node name="bullet" type="CharacterBody2D"]
-collision_layer = 2
+collision_layer = 0
 collision_mask = 0
 script = ExtResource("1_6wip1")
 
+[node name="BulletTypeSpriteStorage" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+rotation = 1.5708
+scale = Vector2(4, 4.18)
+sprite_frames = SubResource("SpriteFrames_86agt")
+animation = &"playerBullet"
+
 [node name="HitArea" type="Area2D" parent="."]
 collision_layer = 0
-collision_mask = 4
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea"]
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_6wip1")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture_filter = 1
-rotation = 1.5708
-scale = Vector2(4, 4.18)
-texture = ExtResource("2_6wip1")
-offset = Vector2(1, 2)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 rotation = 1.5708
@@ -38,10 +67,15 @@ shape = SubResource("CircleShape2D_0qjqd")
 wait_time = 0.06
 
 [node name="ActiveTimer" type="Timer" parent="."]
-wait_time = 3.0
+wait_time = 5.0
 
 [node name="DestroyInTimer" type="Timer" parent="."]
 wait_time = 0.05
+
+[node name="BulletLight" type="PointLight2D" parent="."]
+scale = Vector2(12, 12)
+color = Color(0, 0.333955, 0.333955, 1)
+texture = ExtResource("3_0qjqd")
 
 [connection signal="body_entered" from="HitArea" to="." method="_on_hit_area_body_entered"]
 [connection signal="timeout" from="VisibleTimer" to="." method="_on_visible_timer_timeout"]
