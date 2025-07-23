@@ -1,0 +1,57 @@
+[gd_scene load_steps=6 format=3 uid="uid://tscwl54jyc5p"]
+
+[ext_resource type="Script" uid="uid://bwau1lgs0poan" path="res://player/player.gd" id="1_onrkg"]
+[ext_resource type="Script" uid="uid://muxoy1a80ytq" path="res://player/camerashake.gd" id="2_g1dw6"]
+[ext_resource type="Texture2D" uid="uid://gn4vxl0uxa1s" path="res://player/basic spaceship.png" id="2_rkbax"]
+
+[sub_resource type="Gradient" id="Gradient_rkbax"]
+offsets = PackedFloat32Array(0, 0.993333)
+colors = PackedColorArray(1, 1, 1, 1, 0, 1, 1, 0.0627451)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_onrkg"]
+radius = 61.0
+height = 126.0
+
+[node name="player" type="CharacterBody2D"]
+collision_mask = 0
+script = ExtResource("1_onrkg")
+
+[node name="engine particles" type="CPUParticles2D" parent="."]
+position = Vector2(-54, -2)
+rotation = 1.5708
+scale = Vector2(4, 4)
+amount = 100
+lifetime = 0.5
+explosiveness = 0.07
+direction = Vector2(0, 1)
+spread = 10.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 50.0
+initial_velocity_max = 100.0
+angle_min = -90.0
+angle_max = -90.0
+scale_amount_min = 5.0
+scale_amount_max = 15.0
+color = Color(0, 1, 1, 1)
+color_ramp = SubResource("Gradient_rkbax")
+
+[node name="playerCamera" type="Camera2D" parent="."]
+position = Vector2(3, 0)
+position_smoothing_enabled = true
+script = ExtResource("2_g1dw6")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0, -2)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("2_rkbax")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_onrkg")
+
+[node name="bulletTimer" type="Timer" parent="."]
+wait_time = 0.09
+
+[connection signal="finished" from="engine particles" to="engine particles" method="_on_finished"]
+[connection signal="timeout" from="bulletTimer" to="." method="_on_bullet_timer_timeout"]
