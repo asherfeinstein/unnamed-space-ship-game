@@ -1,7 +1,7 @@
 extends CharacterBody2D
 @export var mouseDirection: Vector2
 
-var speed = 1500
+var speed = 2000
 func _ready() -> void:
 	look_at(get_global_mouse_position())
 	visible = false

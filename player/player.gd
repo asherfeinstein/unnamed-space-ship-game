@@ -12,8 +12,8 @@ func _physics_process(delta: float) -> void:
 	mouseDirection = global_position.direction_to(get_global_mouse_position())
 	#distance to mouse
 	speed = (get_global_mouse_position() - global_position).length()
-	if speed > 700:
-		speed = 700
+	if speed > 1000:
+		speed = 1000
 	velocity = mouseDirection * speed
 	move_and_slide()
 	if Input.is_action_pressed("fire") and canFire:

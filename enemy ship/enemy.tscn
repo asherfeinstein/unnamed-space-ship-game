@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://c138k6plon5kg"]
+[gd_scene load_steps=15 format=3 uid="uid://c138k6plon5kg"]
 
 [ext_resource type="Texture2D" uid="uid://d3igmjq3kprlf" path="res://enemy ship/enemy ship.png" id="1_0ri4l"]
 [ext_resource type="Script" uid="uid://cdcxviixpfxur" path="res://enemy ship/enemy.gd" id="1_v64lm"]
@@ -23,20 +23,9 @@ colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 0)
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_qqi15"]
 gradient = SubResource("Gradient_thqsw")
 
-[sub_resource type="Curve" id="Curve_q6r3x"]
-_data = [Vector2(0, 0.853933), 0.0, 0.0, 0, 0, Vector2(1, 0.157303), 0.0, 0.0, 0, 0]
-point_count = 2
-
-[sub_resource type="Curve" id="Curve_nyfwl"]
-_data = [Vector2(0, 0.719101), 0.0, 0.0, 0, 0, Vector2(0.963235, 0.146068), 0.0, 0.0, 0, 0]
-point_count = 2
-
 [sub_resource type="CurveXYZTexture" id="CurveXYZTexture_8qrmx"]
-curve_x = SubResource("Curve_q6r3x")
-curve_y = SubResource("Curve_nyfwl")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_shr4c"]
-lifetime_randomness = 0.09
 particle_flag_disable_z = true
 emission_shape = 1
 emission_sphere_radius = 40.0
@@ -52,6 +41,7 @@ directional_velocity_min = 1.0
 directional_velocity_max = 1.0
 directional_velocity_curve = SubResource("CurveXYZTexture_8qrmx")
 gravity = Vector3(0, 0, 0)
+attractor_interaction_enabled = false
 scale_min = 4.0
 scale_max = 4.0
 color_ramp = SubResource("GradientTexture1D_qqi15")
@@ -67,16 +57,20 @@ _limits = [-200.0, 200.0, 0.0, 1.0]
 _data = [Vector2(0, 15.7303), 0.0, 0.0, 0, 0, Vector2(1, -56.1797), 0.0, 0.0, 0, 0]
 point_count = 2
 
+[sub_resource type="Curve" id="Curve_thqsw"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.797753), 0.0, 0.0, 0, 0]
+point_count = 2
+
 [sub_resource type="Gradient" id="Gradient_qqi15"]
 offsets = PackedFloat32Array(0, 0.353333, 0.586667, 0.74, 1)
 colors = PackedColorArray(1, 0.784314, 0, 1, 1, 0.458824, 0, 1, 0.763715, 0.310268, 0, 1, 0.389287, 0.389287, 0.389287, 1, 0.247059, 0.247059, 0.247059, 0)
 
 [node name="Enemy" type="CharacterBody2D"]
 collision_layer = 4
-collision_mask = 4
+collision_mask = 0
 script = ExtResource("1_v64lm")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="Collision" type="CollisionShape2D" parent="."]
 rotation = 1.5708
 scale = Vector2(4, 4)
 shape = SubResource("CircleShape2D_v64lm")
@@ -91,7 +85,7 @@ texture = ExtResource("1_0ri4l")
 collision_layer = 4
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="AreaHit"]
+[node name="AreaHitCollision" type="CollisionShape2D" parent="AreaHit"]
 shape = SubResource("CircleShape2D_0ri4l")
 
 [node name="ExplodedShipParticles" type="GPUParticles2D" parent="."]
@@ -127,7 +121,16 @@ angle_min = -180.0
 angle_max = 180.0
 scale_amount_min = 5.0
 scale_amount_max = 20.0
+scale_amount_curve = SubResource("Curve_thqsw")
 color_ramp = SubResource("Gradient_qqi15")
+
+[node name="DamageColorTimer" type="Timer" parent="."]
+wait_time = 0.05
+
+[node name="UpdateGoalPointTimer" type="Timer" parent="."]
+wait_time = 0.5
 
 [connection signal="body_entered" from="AreaHit" to="." method="_on_area_hit_body_entered"]
 [connection signal="finished" from="ExplodedShipParticles" to="." method="_on_exploded_ship_particles_finished"]
+[connection signal="timeout" from="DamageColorTimer" to="." method="_on_damage_color_timer_timeout"]
+[connection signal="timeout" from="UpdateGoalPointTimer" to="." method="_on_update_goal_point_timer_timeout"]
