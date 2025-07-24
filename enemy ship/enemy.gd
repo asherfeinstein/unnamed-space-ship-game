@@ -6,7 +6,7 @@ signal enemyJustDied
 @onready var bullet = preload("res://bullet/bullet.tscn")
 var playerInRange = false
 
-@export var SPEED = 600
+@export var SPEED = 500
 
 @onready var enemyHealth = 10
 @onready var notCurrentlyDead = true
@@ -19,6 +19,7 @@ func _ready():
 	$EnemySprite.modulate = Color(1.0, 1.0, 1.0)
 	$Collision.set_deferred("disabled",false)
 	$AreaHit/AreaHitCollision.set_deferred("disabled",false)
+	$FireBulletArea/CollisionPolygon2D.set_deferred("disabled",false)
 	get_goal_point(Vector2.ZERO)
 	$UpdateGoalPointTimer.start()
 	$AttemptShot.start()
@@ -48,6 +49,7 @@ func _on_area_hit_body_entered(body: Node2D) -> void:
 		$"engine particles".emitting = false
 		$Collision.set_deferred("disabled",true)
 		$AreaHit/AreaHitCollision.set_deferred("disabled",true)
+		$FireBulletArea/CollisionPolygon2D.set_deferred("disabled",true)
 		notCurrentlyDead = false
 		enemyJustDied.emit()
 		$EnemySprite.modulate = Color(1.0, 1.0, 1.0)

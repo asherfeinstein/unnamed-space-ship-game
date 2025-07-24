@@ -42,6 +42,8 @@ func _on_active_timer_timeout() -> void:
 
 func _on_hit_area_body_entered(body: Node2D) -> void:
 	$DestroyInTimer.start()
+	if bulletType == "enemy":
+		get_parent().playerHealth -= 1
 
 func _on_destroy_in_timer_timeout() -> void:
 	queue_free()
